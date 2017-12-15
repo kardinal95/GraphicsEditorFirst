@@ -67,11 +67,20 @@ namespace GraphicsEditor
             }
         }
 
-        public void Recolor(int index, Color color)
+        public void RecolorAt(int index, Color color)
         {
             lock (lockObject)
             {
                 shapes[index].Format.Color = color;
+                Changed?.Invoke();
+            }
+        }
+
+        public void ResizeAt(int index, uint width)
+        {
+            lock (lockObject)
+            {
+                shapes[index].Format.Width = width;
                 Changed?.Invoke();
             }
         }

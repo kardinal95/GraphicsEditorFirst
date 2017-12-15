@@ -42,13 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\WidthCommand.cs" />
     <Compile Include="Commands\CommandLib.cs" />
     <Compile Include="Commands\Shapes\BaseShapeCommand.cs" />
     <Compile Include="Commands\Shapes\CircleCommand.cs" />
     <Compile Include="Commands\ColorCommand.cs" />
     <Compile Include="Commands\Shapes\EllipseCommand.cs" />
     <Compile Include="Commands\Shapes\LineCommand.cs" />
-    <Compile Include="Commands\SaveCommand.cs" />
     <Compile Include="Commands\RemoveCommand.cs" />
     <Compile Include="Commands\ListCommand.cs" />
     <Compile Include="Commands\Shapes\PointCommand.cs" />

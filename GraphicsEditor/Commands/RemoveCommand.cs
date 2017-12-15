@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using ConsoleUI;
 
 namespace GraphicsEditor.Commands
@@ -9,9 +8,12 @@ namespace GraphicsEditor.Commands
         private readonly Picture picture;
 
         public string Name => "remove";
-        public string Help => "Удалить фигуры";
-        public string Description => "";
-        public string[] Synonyms => new[] {"rem"};
+        public string Help => "Удалить фигуры с картинки";
+
+        public string Description => "Удаляет фигуры с указанными индексами\n" +
+                                     "Использование: \'remove x y ..\', где x, y, .. - индексы фигур в команде list";
+
+        public string[] Synonyms => new[] {"rm"};
 
         public RemoveCommand(Picture picture)
         {
@@ -20,44 +22,27 @@ namespace GraphicsEditor.Commands
 
         public void Execute(params string[] parameters)
         {
-            var errors = ParseArguments(parameters, out var parsed);
+            var errors = CommandLib.ParseArguments<int>(parameters, out var parsed);
             if (errors.Count != 0)
             {
                 Console.WriteLine($"Обнаружены ошибки ввода: {string.Join(", ", errors)}");
                 return;
             }
-            var shapes = picture.GetShapes();
-            parsed.Sort();
-            parsed.Reverse();
-            foreach (var index in parsed)
+            var incorrect = CommandLib.ParseShapes(parsed, picture, out var indexes);
+            if (incorrect.Count != 0)
             {
-                if (index >= shapes.Length || index < 0)
-                {
-                    Console.WriteLine($"Не существует элемента под номером: {index}");
-                    continue;
-                }
-                Console.WriteLine($"Удаляем элемент: {shapes[index]}");
+                Console.WriteLine(
+                    $"Не найдены фигуры со следующими индексами: {string.Join(", ", incorrect)}");
+            }
+            if (indexes.Count == 0)
+            {
+                return;
+            }
+            Console.WriteLine($"Удаляем фигуры под индексами: {string.Join(", ", indexes)}");
+            foreach (var index in indexes)
+            {
                 picture.RemoveAt(index);
             }
-        }
-
-        protected static List<string> ParseArguments(string[] args, out List<int> result)
-        {
-            var errors = new List<string>();
-            result = new List<int>();
-            foreach (var argument in args)
-            {
-                try
-                {
-                    var parsed = int.Parse(argument);
-                    result.Add(parsed);
-                }
-                catch (Exception e) when (e is OverflowException || e is FormatException)
-                {
-                    errors.Add(argument);
-                }
-            }
-            return errors;
         }
     }
 }

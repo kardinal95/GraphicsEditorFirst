@@ -8,16 +8,24 @@ namespace GraphicsEditor.Commands
     /// </summary>
     static class CommandLib
     {
-        public static List<string> ParseArguments(string[] args, out List<float> result)
+        /// <summary>
+        ///     Обрабатывает входную строку параметров
+        /// </summary>
+        /// <typeparam name="T">Требуемый тип аргументов</typeparam>
+        /// <param name="args">Входная строка параметров</param>
+        /// <param name="result">Список конвертированных значений</param>
+        /// <returns>Список ошибок</returns>
+        public static List<string> ParseArguments<T>(string[] args, out List<T> result)
+            where T : IConvertible
         {
             var errors = new List<string>();
-            result = new List<float>();
+            result = new List<T>();
             foreach (var argument in args)
             {
                 try
                 {
-                    var parsed = float.Parse(argument);
-                    result.Add(parsed);
+                    var temp = (T) Convert.ChangeType(argument, typeof(T));
+                    result.Add(temp);
                 }
                 catch (Exception e) when (e is OverflowException || e is FormatException)
                 {
@@ -27,20 +35,30 @@ namespace GraphicsEditor.Commands
             return errors;
         }
 
-        public static List<string> ParseArguments(string[] args, out List<int> result)
+        /// <summary>
+        ///     Проверяет существование фигур с указанными индексами на картинке
+        /// </summary>
+        /// <param name="indexes">Входные индексы</param>
+        /// <param name="picture">Обьект изображения</param>
+        /// <param name="parsed">Список существующих индексы</param>
+        /// <returns>Список несуществующих индексов</returns>
+        public static List<int> ParseShapes(List<int> indexes, Picture picture,
+                                            out List<int> parsed)
         {
-            var errors = new List<string>();
-            result = new List<int>();
-            foreach (var argument in args)
+            parsed = new List<int>();
+            var errors = new List<int>();
+            var shapes = picture.GetShapes();
+            indexes.Sort();
+            indexes.Reverse(); // Обрабатывать будем с элемента со старшим индексом чтобы избежать ошибок
+            foreach (var index in indexes)
             {
-                try
+                if (index >= shapes.Length || index < 0)
                 {
-                    var parsed = int.Parse(argument);
-                    result.Add(parsed);
+                    errors.Add(index);
                 }
-                catch (Exception e) when (e is OverflowException || e is FormatException)
+                else
                 {
-                    errors.Add(argument);
+                    parsed.Add(index);
                 }
             }
             return errors;

@@ -4,7 +4,7 @@ using DrawablesUI;
 namespace GraphicsEditor.Shapes
 {
     /// <summary>
-    ///     Определяет хранение формата <see cref="FormatInfo"/> для фигуры
+    ///     Определяет хранение формата <see cref="FormatInfo" /> для фигуры
     ///     Расширяет интерфейс <see cref="IDrawable" />
     /// </summary>
     public interface IShape : IDrawable

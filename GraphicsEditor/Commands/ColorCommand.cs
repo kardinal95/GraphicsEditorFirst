@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using ConsoleUI;
-using DrawablesUI;
-using GraphicsEditor.Shapes;
 
 namespace GraphicsEditor.Commands
 {
@@ -13,9 +10,12 @@ namespace GraphicsEditor.Commands
         private readonly Picture picture;
 
         public string Name => "color";
-        public string Help => "Сохранить текущее изображение";
-        public string Description => "";
-        public string[] Synonyms => new[] { "sv" };
+        public string Help => "Окрасить фигуры в требуемый цвет";
+
+        public string Description => "Окрашивает указанные фигуры в требуемый цвет\n" +
+                                     "Использование: \'color clr x y ..\', где x, y, .. - индексы фигур в команде list, clr - существующий цвет";
+
+        public string[] Synonyms => new[] {""};
 
         public ColorCommand(Picture picture)
         {
@@ -24,53 +24,44 @@ namespace GraphicsEditor.Commands
 
         public void Execute(params string[] parameters)
         {
+            // Проверяем количество параметров
             if (parameters.Length <= 1)
             {
                 Console.WriteLine("Недостаточное количество аргументов");
                 return;
             }
+            // Проверяем правильность цвета
             var color = Color.FromName(parameters[0]);
             if (!color.IsKnownColor)
             {
                 Console.WriteLine("Указан неизвестный цвет!");
                 return;
             }
-            var errors = ParseArguments(parameters.Skip(1).ToArray(), out var parsed);
+            // Проверяем ошибки во вводе индексов
+            var cut = parameters.Skip(1).ToArray();
+            var errors = CommandLib.ParseArguments<int>(cut, out var parsed);
             if (errors.Count != 0)
             {
                 Console.WriteLine($"Обнаружены ошибки ввода: {string.Join(", ", errors)}");
                 return;
             }
-            var shapes = picture.GetShapes();
-            foreach (var index in parsed)
+            // Проверяем существование индексов
+            var nonexistent = CommandLib.ParseShapes(parsed, picture, out var indexes);
+            if (nonexistent.Count != 0)
             {
-                if (index >= shapes.Length || index < 0)
-                {
-                    Console.WriteLine($"Не существует элемента под номером: {index}");
-                    continue;
-                }
-                Console.WriteLine($"Окрашиваем элемент: {shapes[index]}");
-                picture.Recolor(index, color);
+                Console.WriteLine(
+                    $"Не найдены фигуры со следующими индексами: {string.Join(", ", nonexistent)}");
             }
-        }
-
-        protected static List<string> ParseArguments(string[] args, out List<int> result)
-        {
-            var errors = new List<string>();
-            result = new List<int>();
-            foreach (var argument in args)
+            // Выполняем действия
+            if (indexes.Count == 0)
             {
-                try
-                {
-                    var parsed = int.Parse(argument);
-                    result.Add(parsed);
-                }
-                catch (Exception e) when (e is OverflowException || e is FormatException)
-                {
-                    errors.Add(argument);
-                }
+                return;
             }
-            return errors;
+            Console.WriteLine($"Окрашиваем фигуры под индексами: {string.Join(", ", indexes)}");
+            foreach (var index in indexes)
+            {
+                picture.RecolorAt(index, color);
+            }
         }
     }
 }

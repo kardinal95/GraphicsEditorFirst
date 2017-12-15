@@ -33,10 +33,10 @@ namespace GraphicsEditor.Commands.Shapes
         public abstract IShape CreateShape(List<float> parsed);
 
         /// <summary>
-        /// Исполнение команды. Проверяет входные параметры на ошибки
-        /// При нахождении - выводит
-        /// При остутствии - создает фигуру вызовом <see cref="CreateShape"/>, и
-        /// добавляет её на лист
+        ///     Исполнение команды. Проверяет входные параметры на ошибки
+        ///     При нахождении - выводит
+        ///     При остутствии - создает фигуру вызовом <see cref="CreateShape" />, и
+        ///     добавляет её на лист
         /// </summary>
         /// <param name="parameters">Строка входных аргументов</param>
         public void Execute(params string[] parameters)
@@ -46,7 +46,7 @@ namespace GraphicsEditor.Commands.Shapes
                 Console.WriteLine("Ошибка - некорректное количество аргументов!");
                 return;
             }
-            var errors = CommandLib.ParseArguments(parameters, out List<float> parsed);
+            var errors = CommandLib.ParseArguments<float>(parameters, out var parsed);
             if (errors.Count != 0)
             {
                 Console.WriteLine($"Обнаружены ошибки ввода: {string.Join(", ", errors)}");
