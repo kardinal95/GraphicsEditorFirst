@@ -42,12 +42,13 @@ namespace GraphicsEditor.Commands
         /// <param name="picture">Обьект изображения</param>
         /// <param name="parsed">Список существующих индексы</param>
         /// <returns>Список несуществующих индексов</returns>
-        public static List<int> ParseShapes(List<int> indexes, Picture picture,
-                                            out List<int> parsed)
+        public static List<int> CheckShapeIndexes(List<int> indexes, Picture picture,
+                                                  out List<int> parsed)
         {
             parsed = new List<int>();
             var errors = new List<int>();
             var shapes = picture.GetShapes();
+            var previous = -1;
             indexes.Sort();
             indexes.Reverse(); // Обрабатывать будем с элемента со старшим индексом чтобы избежать ошибок
             foreach (var index in indexes)
@@ -56,10 +57,15 @@ namespace GraphicsEditor.Commands
                 {
                     errors.Add(index);
                 }
+                else if (previous == index)
+                {
+                    errors.Add(index);
+                }
                 else
                 {
                     parsed.Add(index);
                 }
+                previous = index;
             }
             return errors;
         }

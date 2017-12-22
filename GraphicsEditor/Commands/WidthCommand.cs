@@ -46,18 +46,17 @@ namespace GraphicsEditor.Commands
             }
             // Проверяем существование индексов
             var cut = parsed.Skip(1).ToList();
-            var nonexistent = CommandLib.ParseShapes(cut, picture, out var indexes);
-            if (nonexistent.Count != 0)
+            var missing = CommandLib.CheckShapeIndexes(cut, picture, out var indexes);
+            if (missing.Count != 0)
             {
-                Console.WriteLine(
-                    $"Не найдены фигуры со следующими индексами: {string.Join(", ", nonexistent)}");
+                Console.WriteLine($"Отсутствуют фигуры с индексами: {string.Join(", ", missing)}");
             }
             // Выполняем действия
             if (indexes.Count == 0)
             {
                 return;
             }
-            Console.WriteLine($"Изменяем ширину фигур под индексами: {string.Join(", ", indexes)}");
+            Console.WriteLine($"Изменяем ширину фигур с индексами: {string.Join(", ", indexes)}");
             foreach (var index in indexes)
             {
                 picture.ResizeAt(index, (uint) width);

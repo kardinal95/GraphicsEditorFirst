@@ -15,7 +15,7 @@ namespace GraphicsEditor.Commands
         public string Description => "Окрашивает указанные фигуры в требуемый цвет\n" +
                                      "Использование: \'color clr x y ..\', где x, y, .. - индексы фигур в команде list, clr - существующий цвет";
 
-        public string[] Synonyms => new[] {""};
+        public string[] Synonyms => new[] { };
 
         public ColorCommand(Picture picture)
         {
@@ -46,18 +46,17 @@ namespace GraphicsEditor.Commands
                 return;
             }
             // Проверяем существование индексов
-            var nonexistent = CommandLib.ParseShapes(parsed, picture, out var indexes);
-            if (nonexistent.Count != 0)
+            var missing = CommandLib.CheckShapeIndexes(parsed, picture, out var indexes);
+            if (missing.Count != 0)
             {
-                Console.WriteLine(
-                    $"Не найдены фигуры со следующими индексами: {string.Join(", ", nonexistent)}");
+                Console.WriteLine($"Отсутствуют фигуры с индексами: {string.Join(", ", missing)}");
             }
             // Выполняем действия
             if (indexes.Count == 0)
             {
                 return;
             }
-            Console.WriteLine($"Окрашиваем фигуры под индексами: {string.Join(", ", indexes)}");
+            Console.WriteLine($"Окрашиваем фигуры с индексами: {string.Join(", ", indexes)}");
             foreach (var index in indexes)
             {
                 picture.RecolorAt(index, color);

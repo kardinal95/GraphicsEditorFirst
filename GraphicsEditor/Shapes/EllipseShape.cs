@@ -29,8 +29,8 @@ namespace GraphicsEditor.Shapes
 
         public override string ToString()
         {
-            return $"Эллипс(Центр({Center.X}, {Center.Y})," +
-                   $" Размер = ({Size.Height}, {Size.Width})," + $" Угол = {Degree})";
+            return $"Эллипс(Центр({Center.X}, {Center.Y}), " +
+                   $"Размер = ({Size.Height}, {Size.Width})," + $" Угол = {Degree})";
         }
     }
 }

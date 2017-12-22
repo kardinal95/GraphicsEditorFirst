@@ -43,7 +43,9 @@ namespace GraphicsEditor.Commands.Shapes
         {
             if (parameters.Length != Argsnum)
             {
-                Console.WriteLine("Ошибка - некорректное количество аргументов!");
+                Console.WriteLine($"Ошибка - ожидается {Argsnum} аргументов," +
+                                  $"было получено {parameters.Length}!");
+                Console.WriteLine($"Для получения справки введите \'explain {Name}\'");
                 return;
             }
             var errors = CommandLib.ParseArguments<float>(parameters, out var parsed);

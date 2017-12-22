@@ -28,17 +28,16 @@ namespace GraphicsEditor.Commands
                 Console.WriteLine($"Обнаружены ошибки ввода: {string.Join(", ", errors)}");
                 return;
             }
-            var incorrect = CommandLib.ParseShapes(parsed, picture, out var indexes);
-            if (incorrect.Count != 0)
+            var missing = CommandLib.CheckShapeIndexes(parsed, picture, out var indexes);
+            if (missing.Count != 0)
             {
-                Console.WriteLine(
-                    $"Не найдены фигуры со следующими индексами: {string.Join(", ", incorrect)}");
+                Console.WriteLine($"Отсутствуют фигуры с индексами: {string.Join(", ", missing)}");
             }
             if (indexes.Count == 0)
             {
                 return;
             }
-            Console.WriteLine($"Удаляем фигуры под индексами: {string.Join(", ", indexes)}");
+            Console.WriteLine($"Удаляем фигуры с индексами: {string.Join(", ", indexes)}");
             foreach (var index in indexes)
             {
                 picture.RemoveAt(index);
